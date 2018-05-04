@@ -1,4 +1,4 @@
-
+//projet
 /*
  *  main.c
  *  Library for MECA1120 : Finite Elements for dummies
@@ -11,6 +11,7 @@
  
  
 #include "glfem.h"
+#include <time.h>
 
 int main(void)
 {  
@@ -31,7 +32,7 @@ int main(void)
   //  A decommenter pour obtenir l'exemple de la seance d'exercice :-)
   //  femGrains* theGrains = femGrainsCreateTiny(radiusIn,radiusOut);;
 
-    GLFWwindow* window = glfemInit("MECA1120 : Homework 4");
+    GLFWwindow* window = glfemInit("MECA1120 : Projet 2017-2018");
     glfwMakeContextCurrent(window);
     int theRunningMode = 1.0;
     float theVelocityFactor = 0.25;

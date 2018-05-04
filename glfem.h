@@ -1,3 +1,4 @@
+//projet
 /*
  *  glfem.h
  *  Library for MECA1120 : Finite Elements for dummies
@@ -28,6 +29,17 @@ void        glfemDrawDisk(double x, double y, double r);
 
 
 void        glfemReshapeWindows(double r, int width, int heigh);
+/*
+a décommenter lorsque le projet aura été crée car pour l'instant,il n'y a aucun lien entre les différents fichier.c
+
+void 		glfemReshapeWindows(femMesh *theMesh, int width, int heigh);
+void 		glfemPlotField(femMesh *theMesh, double *u);
+void 		glfemPlotMesh(femMesh *theMesh);
+void 		glfemPlotEdges(femEdges *theEdges);
+void 		glfemPlotBnd(femEdges *theEdges);
+void        glfemMatrix(double **A, int size, int width, int heigh);
+void        glfemPlotSolver(femSolver *theSolver, int size, int width, int heigh);
+*/
 
 
 

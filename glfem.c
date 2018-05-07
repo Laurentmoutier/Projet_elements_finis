@@ -1,3 +1,4 @@
+//projet
 /*
  *  glfem.c
  *  Library for MECA1120 : Finite Elements for dummies
@@ -274,7 +275,113 @@ void glfemDrawElement(float *x, float *y, int n)
 
 }
 
-    
+//rajout du devoir 5
+void glfemMatrix(double **A, int n, int w, int h)
+{
+	double sizeX = (n - 1) * 40 / 1.7;
+	double meanX = (n - 1) * 20;
+	double sizeY = (n - 1) * 40 / 1.7;
+	double meanY = (n - 1) * 20;
+
+	double ratio = (GLfloat)h / (GLfloat)w;
+	double size = fmax(sizeX, sizeY);
+	double left, right, top, bottom;
+	if (ratio > 1.0) {
+		left = meanX - size;
+		right = meanX + size;
+		bottom = meanY - size * ratio;
+		top = meanY + size * ratio;
+	}
+	else {
+		left = meanX - size / ratio;
+		right = meanX + size / ratio;
+		bottom = meanY - size;
+		top = meanY + size;
+	}
+
+
+	glViewport(0, 0, w, h);
+	glClearColor(0.9f, 0.9f, 0.8f, 0.0f);
+	// glClearColor( 1.0f, 1.0f, 1.0f, 0.0f );  // for white plot
+	glClear(GL_COLOR_BUFFER_BIT);
+	glViewport(0, 0, (GLsizei)w, (GLsizei)h);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(left, right, bottom, top, -5.0, 5.0);
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	int i, j;
+	glEnable(GL_POINT_SMOOTH);
+	double pointSize = fmin(w, h) / (n - 1) * 0.5;
+	glPointSize(pointSize);
+	glBegin(GL_POINTS);
+	for (i = 0; i < n; i++) {
+		for (j = 0; j < n; j++) {
+			if (fabs(A[i][j]) >= 1e-6)  glVertex2f(i*40.0, (n - j - 1)*40.0);
+		}
+	}
+	glEnd();
+
+}
+
+void glfemPlotSolver(femSolver *mySolver, int n, int w, int h)
+{
+	double sizeX = (n - 1) * 40 / 1.7;
+	double meanX = (n - 1) * 20;
+	double sizeY = (n - 1) * 40 / 1.7;
+	double meanY = (n - 1) * 20;
+
+	double ratio = (GLfloat)h / (GLfloat)w;
+	double size = fmax(sizeX, sizeY);
+	double left, right, top, bottom;
+	if (ratio > 1.0) {
+		left = meanX - size;
+		right = meanX + size;
+		bottom = meanY - size * ratio;
+		top = meanY + size * ratio;
+	}
+	else {
+		left = meanX - size / ratio;
+		right = meanX + size / ratio;
+		bottom = meanY - size;
+		top = meanY + size;
+	}
+
+
+	glViewport(0, 0, w, h);
+	glClearColor(0.9f, 0.9f, 0.8f, 0.0f);
+	// glClearColor( 1.0f, 1.0f, 1.0f, 0.0f );  // for white plot
+	glClear(GL_COLOR_BUFFER_BIT);
+	glViewport(0, 0, (GLsizei)w, (GLsizei)h);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(left, right, bottom, top, -5.0, 5.0);
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	int i, j;
+	glEnable(GL_POINT_SMOOTH);
+	double pointSize = fmin(w, h) / (n - 1) * 0.5;
+	glPointSize(pointSize);
+	glBegin(GL_POINTS);
+	for (i = 0; i < n; i++) {
+		for (j = 0; j < n; j++) {
+			double value = femSolverGet(mySolver, j, i);
+			if (fabs(value) >= 1e-6)  glVertex2f(i*40.0, (n - j - 1)*40.0);
+		}
+	}
+	glEnd();
+
+}
+//fin du rajout du devoir 5
+
+// /!!!!!!\ faire gaffe, double r devient femMesh *theMesh   
+// -> non en fait, s'il prenne des arguments différents, c juste parce que les formes sont différentes ..
+// en effet, les seuls lignes qui changent sont juste les 4 premières lignes !! 
+// celles qui définissent qu'elle va être la taille maximum de la fenetre à afficher..
 void glfemReshapeWindows(double r, int w, int h)
 {
     double minX = -r;
@@ -314,6 +421,47 @@ void glfemReshapeWindows(double r, int w, int h)
     glLoadIdentity();
 }
 
+//rajout du devoir 5
+void glfemPlotField(femMesh *theMesh, double *u)
+{
+	int i, j, *nodes;
+	float  xLoc[4];
+	float  yLoc[4];
+	double uLoc[4];
+	double uMax = femMax(u, theMesh->nNode);
+	double uMin = femMin(u, theMesh->nNode);
+	int nLocalNode = theMesh->nLocalNode;
+
+	for (i = 0; i < theMesh->nElem; ++i) {
+		nodes = &(theMesh->elem[i*nLocalNode]);
+		for (j = 0; j < nLocalNode; ++j) {
+			xLoc[j] = theMesh->X[nodes[j]];
+			yLoc[j] = theMesh->Y[nodes[j]];
+			uLoc[j] = glScale(uMin, uMax, u[nodes[j]]);
+		}
+		glfemDrawColorElement(xLoc, yLoc, uLoc, nLocalNode);
+	}
+	glColor3f(0.0, 0.0, 0.0);
+	glfemPlotMesh(theMesh);
+}
+
+void glfemPlotMesh(femMesh *theMesh)
+{
+	int i, j, *nodes;
+	float  xLoc[4];
+	float  yLoc[4];
+	int nLocalNode = theMesh->nLocalNode;
+
+	for (i = 0; i < theMesh->nElem; ++i) {
+		nodes = &(theMesh->elem[i*nLocalNode]);
+		for (j = 0; j < nLocalNode; ++j) {
+			xLoc[j] = theMesh->X[nodes[j]];
+			yLoc[j] = theMesh->Y[nodes[j]];
+		}
+		glfemDrawElement(xLoc, yLoc, nLocalNode);
+	}
+}
+//fin du rajout du devoir 5
 
 void glfemMessage(char *message)
 {
@@ -333,3 +481,30 @@ GLFWwindow* glfemInit(char *theWindowName)
     return(window);
 }
 
+//rajout du devoir 5
+void glfemPlotEdges(femEdges *theEdges)
+{
+	int i;
+	femMesh* theMesh = theEdges->mesh;
+	glBegin(GL_LINES);
+	for (i = 0; i < theEdges->nEdge; i++) {
+		glVertex2d(theMesh->X[theEdges->edges[i].node[0]], theMesh->Y[theEdges->edges[i].node[0]]);
+		glVertex2d(theMesh->X[theEdges->edges[i].node[1]], theMesh->Y[theEdges->edges[i].node[1]]);
+	}
+	glEnd();
+}
+
+void glfemPlotBnd(femEdges *theEdges)
+{
+	int i;
+	femMesh* theMesh = theEdges->mesh;
+	glBegin(GL_LINES);
+	for (i = 0; i < theEdges->nEdge; i++) {
+		if (theEdges->edges[i].elem[1] < 0) {
+			glVertex2d(theMesh->X[theEdges->edges[i].node[0]], theMesh->Y[theEdges->edges[i].node[0]]);
+			glVertex2d(theMesh->X[theEdges->edges[i].node[1]], theMesh->Y[theEdges->edges[i].node[1]]);
+		}
+	}
+	glEnd();
+}
+//fin du rajout du devoir 5

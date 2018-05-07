@@ -1,0 +1,8 @@
+﻿  Building Custom Rule C:/Users/maxcl/OneDrive/Documents/GitHub/Projet_elements_finis/CMakeLists.txt
+  CMake does not need to re-run because C:/Users/maxcl/OneDrive/Documents/GitHub/Projet_elements_finis/build/CMakeFiles/generate.stamp is up-to-date.
+  fem.c
+  glfem.c
+  homework.c
+  main.c
+  Génération de code en cours...
+  myFem.vcxproj -> C:\Users\maxcl\OneDrive\Documents\GitHub\Projet_elements_finis\build\Debug\myFem.exe

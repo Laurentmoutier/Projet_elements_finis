@@ -1,8 +1,9 @@
+//projet
 /*
  *  glfem.h
  *  Library for MECA1120 : Finite Elements for dummies
  *
- *  Copyright (C) 2015 UCL-EPL : Vincent Legat
+ *  Copyright (C) 2018 UCL-EPL : Vincent Legat
  *  All rights reserved.
  *
  *  Pour GLFW (version utilisée 3.1.2)
@@ -13,32 +14,38 @@
 #ifndef _GLFEM_H_
 #define _GLFEM_H_
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <string.h>
-#include "fem.h"
-
-
-
 #define GLFW_INCLUDE_GLU
 #include <GLFW/glfw3.h>
 
+#include "fem.h"
+
+GLFWwindow* window2;
+
+void        glfemDrawColorElement(float *x, float *y, double *u, int n);
+void        glfemDrawElement(float *x, float *y, int n);
+void        glfemDrawNodes(double* x, double* y,int n,double r);
+void        glfemDrawCircle(double x, double y,double r);
+void        glfemDrawDisk(double x, double y, double r);
 
 
-void        glfemDrawElement(double *x, double *y, int n);
-void        glfemDrawNodes(double *x, double *y, int n);
+void        glfemReshapeWindows(double r, int width, int heigh);
+/*
+a décommenter lorsque le projet aura été crée car pour l'instant,il n'y a aucun lien entre les différents fichier.c
+
+void 		glfemReshapeWindows(femMesh *theMesh, int width, int heigh);
+void 		glfemPlotField(femMesh *theMesh, double *u);
+void 		glfemPlotMesh(femMesh *theMesh);
+void 		glfemPlotEdges(femEdges *theEdges);
+void 		glfemPlotBnd(femEdges *theEdges);
+void        glfemMatrix(double **A, int size, int width, int heigh);
+void        glfemPlotSolver(femSolver *theSolver, int size, int width, int heigh);
+*/
+
+
 
 void        glfemMessage(char *message);
-
-void        glfemMakeRasterFont(void);
 void        glfemDrawMessage(int h, int v, char *message);
 void        glfemSetRasterSize(int width, int height);
-
-void        glfemReshapeWindows(double *x, double *y, int n, int w, int h);
-void        glfemDraw(void (*glFunction)(int width, int height));
 GLFWwindow* glfemInit(char *windowName);
 
 #endif
-
-
